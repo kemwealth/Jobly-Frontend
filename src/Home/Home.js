@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import UserContext from "../user/UserContext";
+import UserContext from "../User/UserContext";
 import { Link } from "react-router-dom";
 import "./Home.css"
 
@@ -10,8 +10,10 @@ const Home = () => {
     return (
         <div className="Homepage">
             <div className="container text-center">
-                <h1 className="mb-4 font-weight-bold">Jobly</h1>
-                <p className="lead">All the jobs in one, convenient place.</p>
+                <h1 className="mb-4 font-weight-bold">Find and apply for the best Jobs with JOBLY.</h1>
+                <p className="lead">Discover new opportunities and apply privately using our applications.
+                    Review compensation packages ahead including varities of packages.
+                </p>
                 {currentUser
                     ? <h2>
                         Welcome Back, {currentUser.firstName || currentUser.username}!
@@ -19,7 +21,7 @@ const Home = () => {
                     : (
                         <div>
                             <Link className="auth-btn btn btn-primary font-weight-bold mr-3" to="/login">
-                                Log in
+                                Login
                             </Link>
                             <Link className="btn btn-primary font-weight-bold" to="/signup">
                                 Sign up

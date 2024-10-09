@@ -1,44 +1,58 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import Home from "../home/Home";
+import { Routes, Route, Navigate } from "react-router-dom"; // Change Switch to Routes and Redirect to Navigate
+import Home from "../Home/Home";
 import PrivateRoute from "./PrivateRoutes";
-import Companies from "../companies/CompaniesList";
-import Company from "../companies/Company";
-import Jobs from "../jobs/JobList";
-import SignupForm from "../user/SignupForm";
-import LoginForm from "../user/LoginForm";
-import Profile from "../user/Profile";
+import Companies from "../Companies/CompaniesList";
+import Company from "../Companies/Company";
+import Jobs from "../Jobs/JobList";
+import SignupForm from "../User/SignupForm";
+import LoginForm from "../User/LoginForm";
+import Profile from "../User/Profile";
 
-const Routes = ({ signup, login }) => {
+const AppRoutes = ({ signup, login }) => {
     return (
         <div>
-            <Switch>
-                <Route exact path="/">
-                    <Home />
-                </Route>
-                <PrivateRoute exact path="/companies">
-                    <Companies />
-                </PrivateRoute>
-                <PrivateRoute exact path="/companies/:handle">
-                    <Company />
-                </PrivateRoute>
-                <PrivateRoute exact path="/jobs">
-                    <Jobs />
-                </PrivateRoute>
-                <Route exact path="/login">
-                    <LoginForm login={login}/>
-                </Route>
-                <Route exact path="/signup">
-                    <SignupForm signup={signup}/>
-                </Route>
-                <PrivateRoute path="/profile">
-                    <Profile />
-                </PrivateRoute>
+            <Routes> {/* Use Routes instead of Switch */}
+                <Route path="/" element={<Home />} /> {/* Use element prop */}
+                <Route 
+                    path="/companies" 
+                    element={
+                        <PrivateRoute>
+                            <Companies />
+                        </PrivateRoute>
+                    } 
+                />
+                <Route 
+                    path="/companies/:handle" 
+                    element={
+                        <PrivateRoute>
+                            <Company />
+                        </PrivateRoute>
+                    } 
+                />
+                <Route 
+                    path="/jobs" 
+                    element={
+                        <PrivateRoute>
+                            <Jobs />
+                        </PrivateRoute>
+                    } 
+                />
+                <Route path="/login" element={<LoginForm login={login} />} /> {/* Use element prop */}
+                <Route path="/signup" element={<SignupForm signup={signup} />} /> {/* Use element prop */}
+                <Route 
+                    path="/profile" 
+                    element={
+                        <PrivateRoute>
+                            <Profile />
+                        </PrivateRoute>
+                    } 
+                />
 
-                <Redirect to="/" />
-            </Switch>
+                <Route path="*" element={<Navigate to="/" />} /> {/* Use Navigate for redirecting */}
+            </Routes>
         </div>
     );
 }
 
-export default Routes;
+export default AppRoutes;

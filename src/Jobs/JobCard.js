@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Card, CardBody, CardTitle, CardText, Button } from "reactstrap";
-import UserContext from "../user/UserContext";
+import UserContext from "../User/UserContext";
 import "./JobCard.css";
 
 const JobCard = ({ id, title, salary, equity, companyName }) => {

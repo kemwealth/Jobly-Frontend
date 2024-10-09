@@ -1,31 +1,33 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
-import JoblyApi from "../api/api";
+import { useNavigate } from "react-router-dom"; // Updated import
+import JoblyApi from "../Api/Api";
 import UserContext from "./UserContext";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import './Form.css';
 
 const Profile = () => {
-    const history = useHistory();
+    const navigate = useNavigate(); // Updated variable name
     const { currentUser, setCurrentUser } = useContext(UserContext);
-    useEffect(() => {
-        if (currentUser) {
-          setFormData({
-            firstName: currentUser.firstName,
-            lastName: currentUser.lastName,
-            email: currentUser.email,
-            username: currentUser.username,
-          });
-        }
-      }, [currentUser]);
-    
-      const [formData, setFormData] = useState({
+
+    const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
         username: "",
-      });
+    });
+
     const [formErrors, setFormErrors] = useState([]);
+
+    useEffect(() => {
+        if (currentUser) {
+            setFormData({
+                firstName: currentUser.firstName,
+                lastName: currentUser.lastName,
+                email: currentUser.email,
+                username: currentUser.username,
+            });
+        }
+    }, [currentUser]);
 
     console.debug(
         "ProfileForm",
@@ -54,12 +56,12 @@ const Profile = () => {
             return;
         }
 
-        setFormData(f => ({ ...f, password: "" }));
+        setFormData(f => ({ ...f, password: "" })); // Password reset if applicable
         setFormErrors([]);
 
-        // trigger reloading of user information throughout the site
+        // Trigger reloading of user information throughout the site
         setCurrentUser(updatedUser);
-        history.push("/");
+        navigate("/"); // Updated to use navigate
     }
 
     /** Handle form data changing */
@@ -69,7 +71,7 @@ const Profile = () => {
             ...f,
             [name]: value,
         }));
-        setFormErrors([]);
+        setFormErrors([]); // Reset errors on input change
     }
 
     return (
@@ -86,6 +88,7 @@ const Profile = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -95,6 +98,7 @@ const Profile = () => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -104,12 +108,12 @@ const Profile = () => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <Button
                         type="submit"
                         color="primary"
-                        onSubmit={handleSubmit}
                     >
                         Submit
                     </Button>

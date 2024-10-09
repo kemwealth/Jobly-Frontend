@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import JoblyApi from "./api/api";
-import NavBar from "./nav/NavBar";
-import Routes from "./routes/Routes";
-import UserContext from "./user/UserContext";
-import jwt_decode from 'jwt-decode';
-import useLocalStorage from "./hooks/useLocalStorage";
+import JoblyApi from "./Api/Api";
+import NavBar from "./Nav/NavBar";
+import Routes from "./Routes/Routes";
+import UserContext from "./User/UserContext";
+// Import jwt_decode correctly based on the updated import style
+import * as jwt_decode from "jwt-decode"; // Change this if you are using a version that allows default imports
+import useLocalStorage from "./Hooks/UseLocalStorage";
 import './App.css';
 
 export const TOKEN_STORAGE_ID = "jobly-token";
@@ -29,7 +30,7 @@ const App = () => {
     async function getCurrentUser() {
       if (token) {
         try {
-          let { username } = jwt_decode(token);
+          let { username } = jwt_decode(token); // Make sure this line is using the correct jwt_decode import style
           // put the token on the Api class so it can use it to call the API.
           JoblyApi.token = token;
           let currentUser = await JoblyApi.getCurrentUser(username);
@@ -41,6 +42,7 @@ const App = () => {
       }
       setInfoLoaded(true);
     }
+
     setInfoLoaded(false);
     getCurrentUser();
   }, [token]);
@@ -87,12 +89,12 @@ const App = () => {
       <UserContext.Provider
         value={{ currentUser, setCurrentUser, jobApplied, jobApply }}>
         <div className="App">
-          <NavBar logout={logout}/>
+          <NavBar logout={logout} />
           <Routes signup={signup} login={login} />
         </div>
       </UserContext.Provider>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App;

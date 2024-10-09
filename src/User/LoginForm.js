@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Updated import
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import './Form.css';
 
 const LoginForm = ({ login }) => {
-    const history = useHistory();
+    const navigate = useNavigate(); // Updated variable name
     const INITIAL_STATE = {
         username: "",
         password: "",
     };
 
     const [formData, setFormData] = useState(INITIAL_STATE);
-
     const [formErrors, setFormErrors] = useState([]);
 
     console.debug(
@@ -25,7 +24,7 @@ const LoginForm = ({ login }) => {
         evt.preventDefault();
         let result = await login(formData);
         if (result.success) {
-            history.push("/companies")
+            navigate("/companies"); // Updated to use navigate
         } else {
             setFormErrors(result.errors);
         }
@@ -50,6 +49,7 @@ const LoginForm = ({ login }) => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -59,12 +59,12 @@ const LoginForm = ({ login }) => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <Button
                         type="submit"
                         color="primary"
-                        onSubmit={handleSubmit}
                     >
                         Submit
                     </Button>

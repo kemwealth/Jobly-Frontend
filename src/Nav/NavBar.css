@@ -16,12 +16,12 @@
   }
   
   nav a.active:hover {
-    color: rgb(62, 62, 139);
+    color: rgb(220, 234, 127);
   }
   
   nav a:hover {
     text-decoration: none;
-    color: rgb(62, 62, 139);
+    color: rgb(220, 234, 127);
   }
   
   nav a.active.navbar-brand {
@@ -30,5 +30,5 @@
   
   nav a:not(.navbar-brand):hover {
     font-weight: bold;
-    color: rgb(62, 62, 139);
+    color:rgb(220, 234, 127);
   }

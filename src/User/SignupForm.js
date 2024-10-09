@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Updated import
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import './Form.css';
 
 const SignupForm = ({ signup }) => {
-    const history = useHistory();
+    const navigate = useNavigate(); // Updated variable name
     const INITIAL_STATE = {
         username: "",
         password: "",
@@ -14,7 +14,6 @@ const SignupForm = ({ signup }) => {
     };
 
     const [formData, setFormData] = useState(INITIAL_STATE);
-
     const [formErrors, setFormErrors] = useState([]);
 
     console.debug(
@@ -28,7 +27,7 @@ const SignupForm = ({ signup }) => {
         evt.preventDefault();
         let result = await signup(formData);
         if (result.success) {
-            history.push("/companies")
+            navigate("/companies"); // Updated to use navigate
         } else {
             setFormErrors(result.errors);
         }
@@ -53,6 +52,7 @@ const SignupForm = ({ signup }) => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -62,6 +62,7 @@ const SignupForm = ({ signup }) => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -71,6 +72,7 @@ const SignupForm = ({ signup }) => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -80,6 +82,7 @@ const SignupForm = ({ signup }) => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -89,12 +92,12 @@ const SignupForm = ({ signup }) => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
+                            required // Added required attribute
                         />
                     </FormGroup>
                     <Button
                         type="submit"
                         color="primary"
-                        onSubmit={handleSubmit}
                     >
                         Submit
                     </Button>
