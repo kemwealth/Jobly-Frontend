@@ -4,7 +4,7 @@ import JoblyApi from "./Api/Api";
 import NavBar from "./Nav/NavBar";
 import Routes from "./Routes/Routes";
 import UserContext from "./User/UserContext";
-import { decode as jwt_decode } from "jwt-decode"; // Use named export for jwt-decode
+import {decode as jwt_decode} from 'jwt-decode';
 import useLocalStorage from "./Hooks/UseLocalStorage";
 import './App.css';
 
@@ -16,75 +16,83 @@ const App = () => {
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [jobApplyIds, setJobApplyIds] = useState(new Set([]));
 
-  console.debug("App", { infoLoaded, currentUser, token });
+  console.debug(
+    "App",
+    "infoLoaded=", infoLoaded,
+    "currentUser=", currentUser,
+    "token=", token,
+  );
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      console.debug("App useEffect loadUserInfo", "token=", token);
+  useEffect(function loadUserInfo() {
+    console.debug("App useEffect loadUserInfo", "token=", token);
 
+    async function getCurrentUser() {
       if (token) {
         try {
-          const { username } = jwt_decode(token); // Decode the token to get username
-          JoblyApi.token = token; // Set token on the API class
-          const currentUserData = await JoblyApi.getCurrentUser(username);
-          setCurrentUser(currentUserData);
+          let { username } = jwt_decode(token);
+          // put the token on the Api class so it can use it to call the API.
+          JoblyApi.token = token;
+          let currentUser = await JoblyApi.getCurrentUser(username);
+          setCurrentUser(currentUser);
         } catch (err) {
           console.error("App loadUserInfo: problem loading", err);
           setCurrentUser(null);
         }
       }
       setInfoLoaded(true);
-    };
-
-    setInfoLoaded(false); // Reset loading state
-    loadUserInfo();
+    }
+    setInfoLoaded(false);
+    getCurrentUser();
   }, [token]);
 
-  const logout = () => {
+  function logout() {
     setCurrentUser(null);
-    setToken(null); // Clear token on logout
-  };
+    setToken(null);
+  }
 
-  const signup = async (signupData) => {
+  async function signup(signupData) {
     try {
-      const token = await JoblyApi.signup(signupData);
-      setToken(token); // Store token in local storage
+      let token = await JoblyApi.signup(signupData);
+      setToken(token);
       return { success: true };
     } catch (errors) {
       console.error("signup failed", errors);
       return { success: false, errors };
     }
-  };
+  }
 
-  const login = async (loginData) => {
+  async function login(loginData) {
     try {
-      const token = await JoblyApi.login(loginData);
-      setToken(token); // Store token in local storage
+      let token = await JoblyApi.login(loginData);
+      setToken(token);
       return { success: true };
     } catch (errors) {
       console.error("login failed", errors);
       return { success: false, errors };
     }
-  };
+  }
 
-  const jobApplied = (id) => jobApplyIds.has(id); // Check if job was applied
+  function jobApplied(id) {
+    return jobApplyIds.has(id);
+  }
 
-  const jobApply = (id) => {
-    if (jobApplied(id)) return; // Prevent double applications
+  function jobApply(id) {
+    if (jobApplied(id)) return;
     JoblyApi.jobApply(currentUser.username, id);
-    setJobApplyIds(new Set([...jobApplyIds, id])); // Update applied jobs
-  };
+    setJobApplyIds(new Set([...jobApplyIds, id]));
+  }
 
   return (
     <BrowserRouter>
-      <UserContext.Provider value={{ currentUser, setCurrentUser, jobApplied, jobApply }}>
+      <UserContext.Provider
+        value={{ currentUser, setCurrentUser, jobApplied, jobApply }}>
         <div className="App">
-          <NavBar logout={logout} />
+          <NavBar logout={logout}/>
           <Routes signup={signup} login={login} />
         </div>
       </UserContext.Provider>
     </BrowserRouter>
-  );
-};
+  )
+}
 
 export default App;
