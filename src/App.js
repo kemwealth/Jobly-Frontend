@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import JoblyApi from "./api/api";
-import NavBar from "./nav/NavBar";
-import Routes from "./routes/Routes";
-import UserContext from "./user/UserContext";
+import JoblyApi from "./Api/Api";
+import NavBar from "./Nav/NavBar";
+import Routes from "./Routes/Routes";
+import UserContext from "./User/UserContext";
 import jwt_decode from 'jwt-decode';
-import useLocalStorage from "./hooks/useLocalStorage";
+import useLocalStorage from "./Hooks/useLocalStorage";
 import './App.css';
 
 export const TOKEN_STORAGE_ID = "jobly-token";
