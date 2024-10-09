@@ -4,7 +4,7 @@ import JoblyApi from "./Api/Api";
 import NavBar from "./Nav/NavBar";
 import Routes from "./Routes/Routes";
 import UserContext from "./User/UserContext";
-import jwt_decode from "jwt-decode"; // Use default import for clarity
+import jwt_decode from 'jwt-decode'; // Use default import for clarity
 import useLocalStorage from "./Hooks/UseLocalStorage";
 import './App.css';
 
