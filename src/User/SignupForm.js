@@ -111,7 +111,13 @@ const SignupForm = ({ signup }) => {
                     )}
 
                     <Button type="submit" color="primary" disabled={isLoading}>
-                        {isLoading ? <><Spinner size="sm" color="light" /> Loading...</> : "Submit"}
+                        {isLoading ? (
+                            <>
+                                <Spinner size="sm" color="light" /> Loading...
+                            </>
+                        ) : (
+                            "Submit"
+                        )}
                     </Button>
                 </Form>
             </div>
