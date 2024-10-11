@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap"; // Added Alert for error display
+import { Button, Form, FormGroup, Label, Input, Alert, Spinner } from "reactstrap"; // Added Spinner for loading indication
 import './Form.css';
 
 const LoginForm = ({ login }) => {
@@ -12,6 +12,7 @@ const LoginForm = ({ login }) => {
 
     const [formData, setFormData] = useState(INITIAL_STATE);
     const [formErrors, setFormErrors] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); // State to manage loading status
 
     console.debug(
         "LoginForm",
@@ -22,7 +23,12 @@ const LoginForm = ({ login }) => {
 
     async function handleSubmit(evt) {
         evt.preventDefault();
+        setIsLoading(true); // Set loading state to true when the form is submitted
+        setFormErrors([]); // Clear previous errors
+
         let result = await login(formData);
+        setIsLoading(false); // Reset loading state after the login attempt
+
         if (result.success) {
             navigate("/companies"); // Navigate to companies on success
         } else {
@@ -63,16 +69,16 @@ const LoginForm = ({ login }) => {
                         />
                     </FormGroup>
 
-                    {formErrors.length ? (
+                    {formErrors.length > 0 && (
                         <Alert color="danger">
                             {formErrors.map((error, index) => (
                                 <p key={index}>{error}</p>
                             ))}
                         </Alert>
-                    ) : null}
+                    )}
 
-                    <Button type="submit" color="primary">
-                        Submit
+                    <Button type="submit" color="primary" disabled={isLoading}>
+                        {isLoading ? <Spinner size="sm" color="light" /> : "Submit"}
                     </Button>
                 </Form>
             </div>

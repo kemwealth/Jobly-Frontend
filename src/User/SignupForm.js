@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Updated import
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+import { Button, Form, FormGroup, Label, Input, Alert, Spinner } from "reactstrap"; // Import Spinner
 import './Form.css';
 
 const SignupForm = ({ signup }) => {
-    const navigate = useNavigate(); // Updated variable name
+    const navigate = useNavigate();
     const INITIAL_STATE = {
         username: "",
         password: "",
@@ -15,6 +15,7 @@ const SignupForm = ({ signup }) => {
 
     const [formData, setFormData] = useState(INITIAL_STATE);
     const [formErrors, setFormErrors] = useState([]);
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
     console.debug(
         "SignupForm",
@@ -25,11 +26,16 @@ const SignupForm = ({ signup }) => {
 
     async function handleSubmit(evt) {
         evt.preventDefault();
+        setIsLoading(true); // Set loading state to true
+        setFormErrors([]); // Clear previous errors
+
         let result = await signup(formData);
+        setIsLoading(false); // Reset loading state after submission
+
         if (result.success) {
-            navigate("/companies"); // Updated to use navigate
+            navigate("/companies"); // Navigate to companies on success
         } else {
-            setFormErrors(result.errors);
+            setFormErrors(result.errors); // Set form errors on failure
         }
     }
 
@@ -52,7 +58,7 @@ const SignupForm = ({ signup }) => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -62,7 +68,7 @@ const SignupForm = ({ signup }) => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -72,7 +78,7 @@ const SignupForm = ({ signup }) => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -82,7 +88,7 @@ const SignupForm = ({ signup }) => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -92,14 +98,20 @@ const SignupForm = ({ signup }) => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
-                    <Button
-                        type="submit"
-                        color="primary"
-                    >
-                        Submit
+
+                    {formErrors.length > 0 && (
+                        <Alert color="danger">
+                            {formErrors.map((error, index) => (
+                                <p key={index}>{error}</p>
+                            ))}
+                        </Alert>
+                    )}
+
+                    <Button type="submit" color="primary" disabled={isLoading}>
+                        {isLoading ? <><Spinner size="sm" color="light" /> Loading...</> : "Submit"}
                     </Button>
                 </Form>
             </div>
