@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Updated import
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap"; // Added Alert for error display
 import './Form.css';
 
 const LoginForm = ({ login }) => {
-    const navigate = useNavigate(); // Updated variable name
+    const navigate = useNavigate();
     const INITIAL_STATE = {
         username: "",
         password: "",
@@ -24,9 +24,9 @@ const LoginForm = ({ login }) => {
         evt.preventDefault();
         let result = await login(formData);
         if (result.success) {
-            navigate("/companies"); // Updated to use navigate
+            navigate("/companies"); // Navigate to companies on success
         } else {
-            setFormErrors(result.errors);
+            setFormErrors(result.errors); // Set form errors on failure
         }
     }
 
@@ -49,7 +49,7 @@ const LoginForm = ({ login }) => {
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -59,13 +59,19 @@ const LoginForm = ({ login }) => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
-                    <Button
-                        type="submit"
-                        color="primary"
-                    >
+
+                    {formErrors.length ? (
+                        <Alert color="danger">
+                            {formErrors.map((error, index) => (
+                                <p key={index}>{error}</p>
+                            ))}
+                        </Alert>
+                    ) : null}
+
+                    <Button type="submit" color="primary">
                         Submit
                     </Button>
                 </Form>

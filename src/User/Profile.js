@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom"; // Updated import
+import { useNavigate } from "react-router-dom";
 import JoblyApi from "../Api/Api";
 import UserContext from "./UserContext";
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap"; // Added Alert for error display
 import './Form.css';
 
 const Profile = () => {
-    const navigate = useNavigate(); // Updated variable name
+    const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useContext(UserContext);
 
     const [formData, setFormData] = useState({
@@ -39,29 +39,23 @@ const Profile = () => {
     async function handleSubmit(evt) {
         evt.preventDefault();
 
-        let profileData = {
+        const profileData = {
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
         };
 
-        let username = formData.username;
+        const username = formData.username;
         let updatedUser;
 
         try {
             updatedUser = await JoblyApi.saveProfile(username, profileData);
+            setCurrentUser(updatedUser); // Update context with the new user info
+            setFormErrors([]);
+            navigate("/"); // Redirect after successful update
         } catch (errors) {
-            debugger;
             setFormErrors(errors);
-            return;
         }
-
-        setFormData(f => ({ ...f, password: "" })); // Password reset if applicable
-        setFormErrors([]);
-
-        // Trigger reloading of user information throughout the site
-        setCurrentUser(updatedUser);
-        navigate("/"); // Updated to use navigate
     }
 
     /** Handle form data changing */
@@ -88,7 +82,7 @@ const Profile = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -98,7 +92,7 @@ const Profile = () => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
                     <FormGroup className="form-group">
@@ -108,9 +102,18 @@ const Profile = () => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
-                            required // Added required attribute
+                            required
                         />
                     </FormGroup>
+
+                    {formErrors.length ? (
+                        <Alert color="danger">
+                            {formErrors.map((error, index) => (
+                                <p key={index}>{error}</p>
+                            ))}
+                        </Alert>
+                    ) : null}
+
                     <Button
                         type="submit"
                         color="primary"
