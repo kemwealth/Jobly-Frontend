@@ -111,20 +111,13 @@ const App = () => {
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [appliedJobIds, setAppliedJobIds] = useState(new Set([]));
 
-  console.debug(
-    "App",
-    "infoLoaded=", infoLoaded,
-    "currentUser=", currentUser,
-    "token=", token,
-  );
+  console.debug("App", { infoLoaded, currentUser, token });
 
   useEffect(() => {
-    console.debug("App useEffect loadUserInfo", "token=", token);
-
-    async function loadUserInfo() {
+    const loadUserInfo = async () => {
       if (token) {
         try {
-          const { username } = jwtDecode(token); // Corrected to named import
+          const { username } = jwtDecode(token);
           JoblyApi.token = token; // Set the token globally for API calls
           const currentUser = await JoblyApi.getCurrentUser(username);
           setCurrentUser(currentUser);
@@ -134,13 +127,12 @@ const App = () => {
         }
       }
       setInfoLoaded(true);
-    }
+    };
 
     setInfoLoaded(false);
     loadUserInfo();
 
-    // Cleanup (if any logic needed when component unmounts or token changes)
-    return () => setInfoLoaded(false);
+    return () => setInfoLoaded(false); // Cleanup
   }, [token]);
 
   /** Handles user logout. */
@@ -180,13 +172,12 @@ const App = () => {
   const jobApply = (id) => {
     if (jobApplied(id)) return;
     JoblyApi.jobApply(currentUser.username, id);
-    setAppliedJobIds(new Set([...appliedJobIds, id]));
+    setAppliedJobIds((prevIds) => new Set(prevIds).add(id)); // Update applied job IDs more efficiently
   };
 
   return (
     <BrowserRouter>
-      <UserContext.Provider
-        value={{ currentUser, setCurrentUser, jobApplied, jobApply }}>
+      <UserContext.Provider value={{ currentUser, setCurrentUser, jobApplied, jobApply }}>
         <div className="App">
           <NavBar logout={logout} />
           <Routes signup={signup} login={login} />
@@ -197,3 +188,4 @@ const App = () => {
 };
 
 export default App;
+
